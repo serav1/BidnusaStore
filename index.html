@@ -681,14 +681,11 @@
       </div>
 
       <div class="hero-content">
-        <h1>🔥 Rebut iPhone & Android Harga Miring Hari Ini!</h1>
+        <h1>🔥 Dapat HP Murah (Selisih Jutaan)</h1>
+        <p>Langsung chat admin untuk amankan sekarang — stok terbatas</p>
 
-        <p style="margin-top: 8px">
-          Ajukan harga kamu & amankan sebelum orang lain ambil
-        </p>
-
-        <p style="font-size: 13px; margin-top: 8px; opacity: 0.85">
-          ✔️ 10.000+ pengguna • ✔️ Sistem transparan
+        <p style="font-size: 13px; color: #f9a200">
+          Sistem promo terbatas — bukan lelang ribet
         </p>
 
         <a href="#produk" class="hero-btn">Mulai Sekarang</a>
@@ -714,6 +711,18 @@
         <p style="margin-top: 10px; color: #555">
           Transaksi aman, sistem transparan, dan didukung teknologi modern.
         </p>
+      </div>
+      <div
+        style="
+          font-size: 12px;
+          background: #fff;
+          padding: 10px;
+          border-radius: 8px;
+          text-align: left;
+        "
+      >
+        ✔️ 1.200+ transaksi berhasil <br />✔️ Pengiriman seluruh Indonesia
+        <br />✔️ Bisa cek sebelum deal (via WA)
       </div>
     </section>
 
@@ -1761,13 +1770,22 @@
         ];
 
         const priceMap = {
-          iPhone: [5000000, 8000000],
-          Samsung: [2000000, 5000000],
-          Vivo: [750000, 1000000], // 🔥 sesuai request kamu
+          "iPhone 17": [12000000, 16000000],
+          "iPhone 15": [5000000, 7000000],
+          "iPhone 13": [4000000, 6000000],
+          "iPhone 12": [3500000, 6000000],
+          "iPhone 11": [2500000, 4500000],
+          "iPhone XR": [1800000, 3500000],
+
+          "Samsung A16": [800000, 1500000],
+          "Samsung A35": [2000000, 3500000],
+          Samsung: [1500000, 4000000],
+
+          Vivo: [750000, 1200000],
           Oppo: [1500000, 3000000],
-          Infinix: [750000, 1000000],
+          Infinix: [750000, 1200000],
           Redmi: [1200000, 2500000],
-          Poco: [1500000, 3000000],
+          Poco: [1500000, 3500000],
         };
 
         function randomName() {
@@ -1787,10 +1805,7 @@
           let price =
             Math.floor(Math.random() * (range[1] - range[0])) + range[0];
 
-          // variasi biar natural
           price += Math.floor(Math.random() * 25000);
-
-          // rapikan ke ribuan
           price = Math.floor(price / 1000) * 1000;
 
           return price;
@@ -1801,52 +1816,63 @@
         }
 
         document.querySelectorAll(".item-card").forEach((card, index) => {
-          // cek apakah card ini SOLD
-          if (!card.innerHTML.includes("SOLD")) return;
+          let title = card.querySelector("h3")?.innerText;
+          if (!title) return;
 
-          let title = card.querySelector("h3").innerText;
+          // =====================
+          // 🔥 BAGIAN SOLD
+          // =====================
+          if (card.innerHTML.includes("SOLD")) {
+            let id = "sold_" + index;
+            let saved = localStorage.getItem(id);
+            let data;
 
-          // pakai id tetap biar tidak berubah
-          let id = "sold_" + index;
+            if (saved) {
+              data = JSON.parse(saved);
+            } else {
+              data = {
+                name: randomName(),
+                price: randomPrice(title),
+              };
+              localStorage.setItem(id, JSON.stringify(data));
+            }
 
-          let saved = localStorage.getItem(id);
+            let body = card.querySelector(".card-body");
 
-          let data;
+            body.innerHTML = `
+        <h3>${title}</h3>
 
-          if (saved) {
-            data = JSON.parse(saved);
-          } else {
-            data = {
-              name: randomName(),
-              price: randomPrice(title),
-            };
-            localStorage.setItem(id, JSON.stringify(data));
+        <div class="price-box">
+          <span class="price-now" style="color:#28a745;font-weight:bold;">
+            Terjual di ${formatRp(data.price)}
+          </span>
+        </div>
+
+        <p style="font-size:12px;color:#555;margin-top:6px;">
+          ✔️ Dimenangkan oleh <b>${data.name}</b>
+        </p>
+
+        <p style="font-size:12px;color:#ff5722;">
+          🔥 Banyak peminat sebelumnya
+        </p>
+
+        <p style="font-size:12px;color:#007bff;">
+          💡 Kamu bisa jadi berikutnya
+        </p>
+      `;
           }
+          // =====================
+          // 🔥 BAGIAN PRODUK AKTIF
+          // =====================
+          else {
+            let price = randomPrice(title);
 
-          let body = card.querySelector(".card-body");
+            let bidEl = card.querySelector("[id^='bid']");
 
-          // 🔥 ubah jadi tampilan SOLD (hapus input & tombol)
-          body.innerHTML = `
-      <h3>${title}</h3>
-
-      <div class="price-box">
-        <span class="price-now" style="color:#28a745;font-weight:bold;">
-          Terjual di ${formatRp(data.price)}
-        </span>
-      </div>
-
-      <p style="font-size:12px;color:#555;margin-top:6px;">
-        ✔️ Dimenangkan oleh <b>${data.name}</b>
-      </p>
-
-      <p style="font-size:12px;color:#ff5722;">
-        🔥 Banyak peminat sebelumnya
-      </p>
-
-      <p style="font-size:12px;color:#007bff;">
-        💡 Kamu bisa jadi berikutnya
-      </p>
-    `;
+            if (bidEl) {
+              bidEl.innerText = formatRp(price);
+            }
+          }
         });
       });
     </script>
